@@ -44,7 +44,7 @@ transport capabilities, hardware validation gates, and the planned standalone
 | Repository | Responsibility |
 |---|---|
 | `leddy-interfaces` | Canonical Rust types, OpenAPI, AsyncAPI, and JSON Schema contracts |
-| `leddy-lib` | Shared matrix framebuffer, font, and scrolling renderer |
+| `leddy-lib` | Shared matrix framebuffer, font, scrolling playback, and physical LED-chain ordering |
 | `leddy-clients` | Polyglot SDK family generated around the contracts |
 | `leddy-web-server.rs` | Browser UI and operator WebSocket surface |
 | `leddy-api-server.rs` | Device/message API, command fan-out, and telemetry intake |
@@ -65,6 +65,7 @@ are published and resolvable.
 
 - [GitHub Project: led-dynamo-project](https://github.com/orgs/led-dynamo/projects/1)
 - [Linear planning project](https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494)
+- [Leddy delivery roadmap](../docs/ROADMAP.md)
 - [Detailed project-routing contract](../docs/PROJECTS.md)
 - [Controller support roadmap](../docs/CONTROLLERS.md)
 
