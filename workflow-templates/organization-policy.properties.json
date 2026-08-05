@@ -1,0 +1,8 @@
+{
+  "name": "Organization policy",
+  "description": "Validate lowercase agent policy, reject conflict markers, and require immutable Action pins.",
+  "iconName": "octicon shield",
+  "categories": [
+    "continuous-integration"
+  ]
+}

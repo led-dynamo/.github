@@ -1,0 +1,109 @@
+{
+  "$id": "private-registry://canonical/schema/repository-relationships.manual.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "relationships": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "from": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "cross-organization",
+              "organization"
+            ]
+          },
+          "status": {
+            "enum": [
+              "declared",
+              "inferred",
+              "observed",
+              "proposed"
+            ]
+          },
+          "to": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "contains",
+              "depends_on",
+              "deploys",
+              "documents",
+              "governs",
+              "implements",
+              "integrates_with",
+              "mirrors",
+              "publishes",
+              "shares_contract_with",
+              "submodule_of",
+              "supersedes",
+              "tests",
+              "uses_workflow_from"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "type"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "repositories": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "full_name": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "visibility": {
+            "enum": [
+              "public",
+              "private",
+              "internal"
+            ]
+          }
+        },
+        "required": [
+          "full_name",
+          "visibility"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "owner",
+    "repositories",
+    "relationships"
+  ],
+  "title": "Reviewed repository relationship declarations",
+  "type": "object"
+}

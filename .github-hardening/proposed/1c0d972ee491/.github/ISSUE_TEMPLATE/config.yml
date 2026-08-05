@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security policy
+    url: https://github.com/led-dynamo/.github/security/policy
+    about: Do not post vulnerability details publicly; follow the private reporting instructions.
+  - name: Support guidance
+    url: https://github.com/led-dynamo/.github/blob/HEAD/SUPPORT.md
+    about: Review the organization-wide support guidance before filing.
+  - name: Linear planning project
+    url: https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494
+    about: Internal planning and delivery context; access may be restricted.

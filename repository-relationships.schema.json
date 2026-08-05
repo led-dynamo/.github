@@ -1,0 +1,257 @@
+{
+  "$id": "private-registry://canonical/schema/repository-relationships.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "audience": {
+            "const": "public"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "private_registry"
+        ]
+      }
+    }
+  ],
+  "properties": {
+    "audience": {
+      "enum": [
+        "public",
+        "private"
+      ]
+    },
+    "generated": {
+      "properties": {
+        "inventory_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "managed_by": {
+          "const": "ore-repository-relationship-rollout"
+        }
+      },
+      "required": [
+        "managed_by",
+        "generator_version",
+        "generated_at",
+        "inventory_digest"
+      ],
+      "type": "object"
+    },
+    "owner": {
+      "properties": {
+        "account_type": {
+          "enum": [
+            "organization",
+            "user"
+          ]
+        },
+        "dotgithub_repository": {
+          "type": "string"
+        },
+        "linear_project": {
+          "type": "object"
+        },
+        "login": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "login",
+        "account_type",
+        "dotgithub_repository",
+        "linear_project"
+      ],
+      "type": "object"
+    },
+    "private_registry": {
+      "additionalProperties": true,
+      "properties": {
+        "contains_non_public_inventory": {
+          "type": "boolean"
+        },
+        "digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "path": {
+          "pattern": "^owners/[^/]+\\.json$",
+          "type": "string"
+        },
+        "repository": {
+          "const": "approved-private-registry"
+        }
+      },
+      "required": [
+        "repository",
+        "path",
+        "contains_non_public_inventory",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "relationships": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "evidence": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "from": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "scope": {
+            "enum": [
+              "cross-organization",
+              "organization"
+            ]
+          },
+          "status": {
+            "enum": [
+              "declared",
+              "inferred",
+              "observed",
+              "proposed"
+            ]
+          },
+          "to": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "contains",
+              "depends_on",
+              "deploys",
+              "documents",
+              "governs",
+              "implements",
+              "integrates_with",
+              "mirrors",
+              "publishes",
+              "shares_contract_with",
+              "submodule_of",
+              "supersedes",
+              "tests",
+              "uses_workflow_from"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "type",
+          "status",
+          "scope",
+          "required",
+          "evidence"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "repositories": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "default_branch": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "fork": {
+            "type": "boolean"
+          },
+          "full_name": {
+            "pattern": "^[^/]+/[^/]+$",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owner": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "source": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "visibility": {
+            "enum": [
+              "public",
+              "private",
+              "internal"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "full_name",
+          "owner",
+          "visibility",
+          "default_branch",
+          "archived",
+          "fork",
+          "roles",
+          "source"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "unresolved_hints": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "owner",
+    "audience",
+    "generated",
+    "repositories",
+    "relationships",
+    "unresolved_hints"
+  ],
+  "title": "Repository relationship registry",
+  "type": "object"
+}
