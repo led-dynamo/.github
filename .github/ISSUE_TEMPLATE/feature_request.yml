@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a focused improvement for a led-dynamo repository
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user or engineering problem, not only the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain repository ownership, interfaces, compatibility, and validation.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Repository boundaries
+      options:
+        - label: This does not place a `*-infra` repository under `*-monorepo/apps` as a Git submodule.
+          required: true
