@@ -65,9 +65,7 @@ are published and resolvable.
 
 - [GitHub Project: led-dynamo-project](https://github.com/orgs/led-dynamo/projects/1)
 - [Linear planning project](https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494)
-- [Leddy delivery roadmap](../docs/ROADMAP.md)
 - [Detailed project-routing contract](../docs/PROJECTS.md)
-- [Controller support roadmap](../docs/CONTROLLERS.md)
 
 GitHub owns code and delivery evidence; Linear owns planning and dependencies. The linked organization Project provides the cross-repository execution view.
 <!-- org-project-routing:end -->
