@@ -45,3 +45,13 @@ The canonical dependency direction is interfaces → library/clients → servers
 and device agents → CLI and end-to-end tests. Zed packages materialize under
 `.vendor/.zed`; resolver-generated lockfiles are committed only after packages
 are published and resolvable.
+
+<!-- org-project-routing:start -->
+## Planning and delivery
+
+- [GitHub Project: led-dynamo-project](https://github.com/orgs/led-dynamo/projects/1)
+- [Linear planning project](https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494)
+- [Detailed project-routing contract](../docs/PROJECTS.md)
+
+GitHub owns code and delivery evidence; Linear owns planning and dependencies. The linked organization Project provides the cross-repository execution view.
+<!-- org-project-routing:end -->
