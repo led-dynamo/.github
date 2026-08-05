@@ -1,0 +1,18 @@
+name: Bug report
+description: Report reproducible incorrect behavior in a led-dynamo repository
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Describe what should happen and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include exact steps, revision, and environment. Remove credentials and private data.
+    validations:
+      required: true
