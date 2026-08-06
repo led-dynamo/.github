@@ -24,3 +24,7 @@ include/secrets.h
 
 # Logs
 *.log
+tmp
+temp
+tmp/worktrees
+temp/worktrees
