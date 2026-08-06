@@ -1,29 +1,80 @@
-# Desktop application allocation
+# LED Dynamo desktop applications
 
-Verified **2026-08-05**.
+Verified **2026-08-06**.
 
-LED Dynamo is a **strong candidate** for paired native desktop device-control applications:
+## Required pair
 
-- Rust: [`led-dynamo/led-dynamo-desktop.rs`](https://github.com/led-dynamo/led-dynamo-desktop.rs) — **proposed**, not yet verified as a published repository.
-- Flutter: [`led-dynamo/led-dynamo-flutter`](https://github.com/led-dynamo/led-dynamo-flutter) — **proposed**, not yet verified as a published repository.
+- Rust: [`led-dynamo/leddy-desktop.rs`](https://github.com/led-dynamo/leddy-desktop.rs) — **planned**, not yet verified as published.
+- Flutter: [`led-dynamo/leddy-flutter`](https://github.com/led-dynamo/leddy-flutter) — **planned**, not yet verified as published.
 
-These names are proposed allocation targets, not proof that either remote exists and not a claim that implementation is approved or complete. Promote the pair from proposed to planned only when scope, ownership, milestones, supported boards/transports, and repository creation are accepted in Linear.
+These names supersede the earlier `led-dynamo-desktop.rs` and `led-dynamo-flutter` proposals. Do not mark either implementation live until the remote, native build, packaging, tests, and supported-board/platform matrix are verified.
+
+## Rust desktop kit: Slint, fully native
+
+The Rust application uses **Slint**.
+
+- Embedded WebViews are prohibited.
+- Rust owns device discovery, serial/USB and network transports, command validation, telemetry, firmware metadata, persistence, scheduling, deep-link parsing, and privileged operations.
+- Slint owns compiled native presentation, matrix preview, controls, diagnostics, and user interaction.
+- OS and device integration belongs behind small Rust platform/transport adapters.
+
+This strategy provides a small native runtime, direct hardware access, deterministic rendering, and low-overhead offline control for LED matrices and embedded boards.
+
+The future Rust repository must contain `docs/DESKTOP_TOOLKIT.md` documenting the Slint version policy, no-WebView rule, device/privilege boundaries, performance budgets, deep links, packaging, platform/board tests, and Flutter companion.
+
+## Parallel Rust and Flutter development
+
+The Rust and Flutter applications are first-class implementations developed side-by-side to compare native performance and device integration against Flutter portability/mobile reuse, accessibility, developer velocity, packaging, and long-term maintenance.
+
+Every desktop-facing feature must inspect both repositories, share acceptance criteria and fixtures, and normally update both. A one-sided change requires an explicit no-change rationale and parity gap. The future `leddy-desktop.rs` README, `AGENTS.md`, pull-request template, and `docs/DESKTOP_TOOLKIT.md` must state this rule prominently.
+
+## HTTPS-first deep links
+
+Canonical route family:
+
+```text
+https://<verified-leddy-owned-host>/open/<route>?<bounded-query>
+```
+
+Fallback scheme:
+
+```text
+leddy://<route>?<bounded-query>
+```
+
+Rust and Flutter must share versioned route types and golden fixtures.
+
+Initial route families may include devices, matrices, previews, playlists, schedules, fonts/assets, firmware metadata, diagnostics, and authenticated notifications.
+
+Required behavior:
+
+- cold-start and already-running/single-instance delivery;
+- exact host, route/version, device/board/playlist/schedule identifiers, action, and bounded-query validation;
+- authenticated resume and browser fallback;
+- replay, expiry, device ownership, capability, and unsafe-return validation;
+- explicit confirmation before firmware operations, device reconfiguration, destructive changes, or external asset import; and
+- macOS, Windows, Linux, Android, and iOS tests plus simulated-device fixtures.
+
+Passwords, bearer tokens, Wi-Fi credentials, device secrets, firmware signing keys, MQTT credentials, or raw command payloads are prohibited in URLs. Use short-lived, one-time, audience-bound codes for device enrollment and privileged handoffs.
 
 ## Product boundary
 
-The pair should cover semantic parity for local device discovery, serial/USB configuration, MQTT and WebSocket connections, command and telemetry diagnostics, matrix preview, fonts and assets, playlists, schedules, firmware management, offline control, reconnect/recovery, and per-board capability reporting.
+Both implementations should converge on:
 
-A shared Rust device and transport core may sit behind an explicit library, FFI, or local-service boundary, but the Flutter application remains independently buildable, testable, and releasable. Shared schemas, commands, telemetry contracts, fixtures, simulator traces, board capability matrices, firmware manifests, and conformance tests should be versioned deliberately.
-
-## Feature-delivery rule
-
-Once planned, every desktop-facing change must inspect both implementations, define shared acceptance and device-safety criteria, update both or record an explicit no-change rationale, and report Rust and Flutter status separately. Board, transport, firmware, and operating-system support must be verified rather than inferred.
+- local device discovery and capability reporting;
+- serial/USB, MQTT, and WebSocket configuration;
+- command/telemetry diagnostics;
+- matrix preview, fonts, assets, playlists, and schedules;
+- firmware metadata and safe update workflows;
+- offline operation, reconnect/recovery, and notifications;
+- schemas, generated clients, route fixtures, simulator traces, board capability matrices, and conformance tests.
 
 ## Project routing
 
 - GitHub Project: [`led-dynamo-project` — Project 1](https://github.com/orgs/led-dynamo/projects/1)
 - Linear project: `github.com/led-dynamo`
-- Central registry: [`approved-private-registry`](private-registry://canonical/registry/desktop-applications.json)
+- Central registry: [`desktop-applications.json`](https://github.com/ORESoftware/project-registry/blob/main/registry/desktop-applications.json)
+- Toolkit strategy: [`rust-desktop-strategies.md`](https://github.com/ORESoftware/project-registry/blob/main/docs/rust-desktop-strategies.md)
 - Portfolio rollout: [`DEN-2469`](https://linear.app/denman/issue/DEN-2469/roll-out-paired-rust-flutter-desktop-repositories-across-the-portfolio)
 
-Promotion, repository creation, renames, transfers, archival, board/transport changes, or platform-status changes must update this document, Linear, the central registry, and both companion repositories together.
+Repository creation, toolkit changes, deep-link changes, renames, transfers, archival, board/transport changes, or platform-status changes must update this document, Linear, the central registry/strategy, and both companion repositories together.
