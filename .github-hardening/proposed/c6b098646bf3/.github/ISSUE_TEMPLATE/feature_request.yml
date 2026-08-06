@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a bounded behavior or capability change.
+title: "feat: "
+body:
+  - type: input
+    id: repository
+    attributes:
+      label: Target repository or component
+      placeholder: OWNER/REPOSITORY
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or user outcome
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and tradeoffs
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Cross-repository contracts, migration, security, or operational impact
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: This request contains no credentials or private customer, legal, health, or security-sensitive data.
+          required: true

@@ -1,0 +1,63 @@
+name: organization-policy
+
+on:
+  pull_request:
+  push:
+    branches:
+      - $default-branch
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: organization-policy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Require lowercase agent policy
+        shell: bash
+        run: |
+          test -f agents.md
+          grep -Fq "avoid git rebase in favor of git merge" agents.md
+          grep -Fq "git stash" agents.md
+          grep -Fq "git reset" agents.md
+          grep -Fq "git clean" agents.md
+          grep -Fq "git filter-repo" agents.md
+      - name: Reject unresolved conflict markers
+        shell: bash
+        run: |
+          if git grep -n -E '^(<<<<<<<|=======|>>>>>>>)' -- .; then
+            echo "Unresolved conflict marker detected" >&2
+            exit 1
+          fi
+      - name: Require immutable external Action pins
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          bad = []
+          for path in Path('.github/workflows').glob('*.y*ml'):
+              for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  match = re.search(r'^\s*(?:-\s+)?uses:\s*([^\s#]+)', line)
+                  if not match:
+                      continue
+                  ref = match.group(1)
+                  if ref.startswith('./'):
+                      continue
+                  if ref.startswith('docker://'):
+                      if not re.search(r'@sha256:[0-9a-fA-F]{64}$', ref):
+                          bad.append(f"{path}:{number}: {ref}")
+                      continue
+                  if not re.search(r'@[0-9a-fA-F]{40}$', ref):
+                      bad.append(f"{path}:{number}: {ref}")
+          if bad:
+              raise SystemExit("External Actions must use full commit SHAs:\n" + "\n".join(bad))

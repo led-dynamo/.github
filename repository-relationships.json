@@ -1,0 +1,500 @@
+{
+  "$schema": "./repository-relationships.schema.json",
+  "audience": "public",
+  "generated": {
+    "complete_for_visibility": "public",
+    "generated_at": "2026-08-05T23:41:16Z",
+    "generator_version": "2026-08-04.1",
+    "inventory_digest": "sha256:40d741713ce986ee8c44fc6c6d3a8fffff9ffcdcb84443e32c19bb8ec8c05fe9",
+    "managed_by": "ore-repository-relationship-rollout",
+    "omitted_repository_count": 0,
+    "private_repositories_omitted": false,
+    "source": "GitHub GraphQL repository inventory plus reviewed manual declarations"
+  },
+  "owner": {
+    "account_type": "organization",
+    "dotgithub_repository": "led-dynamo/.github",
+    "github_id": "313447864",
+    "linear_project": {
+      "id": "82f88159-8d79-4daa-9d3e-3781acf48e7e",
+      "name": "github.com/led-dynamo",
+      "team_id": "eb8ab169-5afe-4b6f-9cab-3f2aa3e887dc",
+      "url": "https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494",
+      "workspace": "denman"
+    },
+    "login": "led-dynamo",
+    "mapping_id": "context:led-dynamo"
+  },
+  "private_registry": {
+    "contains_non_public_inventory": false,
+    "digest": "sha256:5e4ee229901ca21a234af067ad2ec6e9977e24ac248b3e743c93d70bf438969b",
+    "path": "owners/led-dynamo.json",
+    "repository": "approved-private-registry"
+  },
+  "relationships": [
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:544119f0a2c551d24e4275bbe0cc0759057caf53987db4bd45121d3c88c5838b",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-api-server.rs",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:23bc5ca41b81bd9f776a48c120b4da585c9c8fb7b35ddbcfbb76857ffa323eba",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-arduino",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:8ec9691424d06fcc3035abbabc2e64506cd7e47f27ef26fe1f31193bb75fbfc8",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-cli",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:d87cb8d95bd3c1c587f9f0bd46b447afab1f6514caa24462efcf1bb535386525",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-clients",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:36d3e64f0d8e66a03adc05628a1e6bbb1a9c447e2ea17dd3d542f08d0607168e",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-e2e",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:7437454fdea24942de362f614e385f8fe999fdfcf4ec459035170e5c8311e188",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-infra",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:301f4819f802953833625be20e285d38017faae8769652495800401150d43a52",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-interfaces",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:673f6e1faf3c51fcf2629755d08ab91cf03e11421c280c39e7950034b03803d0",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-lib",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:0a668f462d3c8109432705760b54de3a11133bce3f8a54e193b5870e5058cc58",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-monorepo",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:f02e3a7c168410c5b74c2fc4e7710ff8335f58ca49b59d246ae337958bfceb24",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-rasp-pi",
+      "type": "governs"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "kind": "github-owner-membership",
+          "source": "GitHub GraphQL repository inventory"
+        }
+      ],
+      "from": "led-dynamo/.github",
+      "id": "sha256:1d6095cfe9fc1782781bc0dd2f14ea37f73de8dc2e7697d86005ddfd67f8404a",
+      "notes": "Organization .github policy and community-health defaults govern this sibling repository.",
+      "required": true,
+      "scope": "organization",
+      "status": "declared",
+      "to": "led-dynamo/leddy-web-server.rs",
+      "type": "governs"
+    },
+    {
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "family": "leddy",
+          "kind": "paired-repository-naming",
+          "source_role": "api-server",
+          "target_role": "interfaces"
+        }
+      ],
+      "from": "led-dynamo/leddy-api-server.rs",
+      "id": "sha256:9a0328a6faa43e01ef0a0dfe65cde75ba97dd6471b3b626566bbf908e2d62ecb",
+      "notes": "Conservative naming inference; confirm or override in the manual declaration file.",
+      "required": false,
+      "scope": "organization",
+      "status": "inferred",
+      "to": "led-dynamo/leddy-interfaces",
+      "type": "depends_on"
+    },
+    {
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "family": "leddy",
+          "kind": "paired-repository-naming",
+          "source_role": "clients",
+          "target_role": "interfaces"
+        }
+      ],
+      "from": "led-dynamo/leddy-clients",
+      "id": "sha256:de8bb207eaa4b048ed8e0dcb4b931a23ccfccd761314aa40b1bb665f80dbdbfa",
+      "notes": "Conservative naming inference; confirm or override in the manual declaration file.",
+      "required": false,
+      "scope": "organization",
+      "status": "inferred",
+      "to": "led-dynamo/leddy-interfaces",
+      "type": "depends_on"
+    },
+    {
+      "confidence": 0.78,
+      "evidence": [
+        {
+          "family": "leddy",
+          "kind": "paired-repository-naming"
+        }
+      ],
+      "from": "led-dynamo/leddy-e2e",
+      "id": "sha256:790dd9a04150d21eca5ff550e26b5483209fb88d42eae66babfd5dd2e8eb54d5",
+      "notes": "Conservative naming inference; confirm or override in the manual declaration file.",
+      "required": false,
+      "scope": "organization",
+      "status": "inferred",
+      "to": "led-dynamo/leddy-monorepo",
+      "type": "tests"
+    },
+    {
+      "confidence": 0.76,
+      "evidence": [
+        {
+          "family": "leddy",
+          "kind": "paired-repository-naming"
+        }
+      ],
+      "from": "led-dynamo/leddy-infra",
+      "id": "sha256:95710cf25bb22b9af930caf98c4eb31cd7774cae79f26b994a45219b5d3eabba",
+      "notes": "Conservative naming inference; confirm or override in the manual declaration file.",
+      "required": false,
+      "scope": "organization",
+      "status": "inferred",
+      "to": "led-dynamo/leddy-monorepo",
+      "type": "deploys"
+    },
+    {
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "family": "leddy",
+          "kind": "paired-repository-naming",
+          "source_role": "web-server",
+          "target_role": "interfaces"
+        }
+      ],
+      "from": "led-dynamo/leddy-web-server.rs",
+      "id": "sha256:67f996ed8234d8f7244171f556105951d7a3bfd0f872fc0de7bb9044f3b601de",
+      "notes": "Conservative naming inference; confirm or override in the manual declaration file.",
+      "required": false,
+      "scope": "organization",
+      "status": "inferred",
+      "to": "led-dynamo/leddy-interfaces",
+      "type": "depends_on"
+    }
+  ],
+  "repositories": [
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/.github",
+      "github_id": "1324139103",
+      "name": ".github",
+      "owner": "led-dynamo",
+      "roles": [
+        "community-health",
+        "governance",
+        "relationship-registry"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/.github",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-api-server.rs",
+      "github_id": "1324139327",
+      "name": "leddy-api-server.rs",
+      "owner": "led-dynamo",
+      "roles": [
+        "api-server"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-api-server.rs",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-arduino",
+      "github_id": "1324139541",
+      "name": "leddy-arduino",
+      "owner": "led-dynamo",
+      "roles": [
+        "repository"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-arduino",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-cli",
+      "github_id": "1324139421",
+      "name": "leddy-cli",
+      "owner": "led-dynamo",
+      "roles": [
+        "repository"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-cli",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-clients",
+      "github_id": "1324139263",
+      "name": "leddy-clients",
+      "owner": "led-dynamo",
+      "roles": [
+        "clients"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-clients",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-e2e",
+      "github_id": "1324139596",
+      "name": "leddy-e2e",
+      "owner": "led-dynamo",
+      "roles": [
+        "end-to-end-tests"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-e2e",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-infra",
+      "github_id": "1324139635",
+      "name": "leddy-infra",
+      "owner": "led-dynamo",
+      "roles": [
+        "infrastructure"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-infra",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-interfaces",
+      "github_id": "1324139151",
+      "name": "leddy-interfaces",
+      "owner": "led-dynamo",
+      "roles": [
+        "interfaces"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-interfaces",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-lib",
+      "github_id": "1324139204",
+      "name": "leddy-lib",
+      "owner": "led-dynamo",
+      "roles": [
+        "repository"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-lib",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-monorepo",
+      "github_id": "1324139697",
+      "name": "leddy-monorepo",
+      "owner": "led-dynamo",
+      "roles": [
+        "monorepo"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-monorepo",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-rasp-pi",
+      "github_id": "1324139488",
+      "name": "leddy-rasp-pi",
+      "owner": "led-dynamo",
+      "roles": [
+        "repository"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-rasp-pi",
+      "visibility": "public"
+    },
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "led-dynamo/leddy-web-server.rs",
+      "github_id": "1324139375",
+      "name": "leddy-web-server.rs",
+      "owner": "led-dynamo",
+      "roles": [
+        "web-server"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/led-dynamo/leddy-web-server.rs",
+      "visibility": "public"
+    }
+  ],
+  "schema_version": 1,
+  "unresolved_hints": []
+}

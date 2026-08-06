@@ -1,0 +1,11 @@
+{
+  "$schema": "./repository-relationships.manual.schema.json",
+  "notes": [
+    "Declare reviewed repository relationships here; generated inventory belongs in repository-relationships.json.",
+    "A public .github repository must not name private repositories. Put private declarations in approved-private-registry."
+  ],
+  "owner": "led-dynamo",
+  "relationships": [],
+  "repositories": [],
+  "schema_version": 1
+}

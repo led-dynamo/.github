@@ -1,0 +1,43 @@
+name: repository-relationships
+
+on:
+  pull_request:
+    paths:
+      - repository-relationships.json
+      - repository-relationships.manual.json
+      - repository-relationships.schema.json
+      - repository-relationships.manual.schema.json
+      - docs/REPOSITORY_RELATIONSHIPS.md
+      - scripts/repository_relationships_lib.py
+      - scripts/validate_repository_relationships.py
+      - .github/workflows/repository-relationships.yml
+  push:
+    paths:
+      - repository-relationships.json
+      - repository-relationships.manual.json
+      - repository-relationships.schema.json
+      - repository-relationships.manual.schema.json
+      - docs/REPOSITORY_RELATIONSHIPS.md
+      - scripts/repository_relationships_lib.py
+      - scripts/validate_repository_relationships.py
+      - .github/workflows/repository-relationships.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-relationships-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Validate relationship registry
+        run: python3 scripts/validate_repository_relationships.py .

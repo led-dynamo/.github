@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible defect without including secrets or private data.
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. Do not include credentials, private logs, customer data, or vulnerability details. Follow SECURITY.md for security reports.
+  - type: input
+    id: repository
+    attributes:
+      label: Affected repository
+      placeholder: OWNER/REPOSITORY
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version, commit, or environment
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Redact tokens, private URLs, customer data, and sensitive logs.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Validation already performed
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, private data, and vulnerability details.
+          required: true
