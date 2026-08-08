@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+      - run: cargo test --all-targets --all-features
+      - name: Validate canonical Zed dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dependency in \
+            led-dynamo/leddy-clients \
+            led-dynamo/leddy-interfaces \
+            led-dynamo/leddy-lib \
+            led-dynamo/leddy-cli \
+            led-dynamo/leddy-sync \
+            shared-auth/shared-auth-clients
+          do
+            grep -Fq "\"${dependency}\"" .zpkg.toml
+          done
+          grep -Fq 'dir = ".vendor/.zed"' .zpkg.toml

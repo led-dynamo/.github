@@ -1,0 +1,7 @@
+target/
+.vendor/
+.zed/
+.env
+.env.*
+!.env.example
+*.log
