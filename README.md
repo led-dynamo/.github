@@ -4,26 +4,24 @@ Shared organization profile, contribution guidance, security policy, and issue
 templates for the Leddy connected LED-sign system.
 
 <!-- ore-org-baseline:begin -->
-## Account-wide defaults
+## Organization-wide defaults
 
-This public repository is the canonical source for GitHub-supported fallback community files, organization profile content, reusable workflow examples, and public contributor guidance for [`led-dynamo`](https://github.com/led-dynamo).
+This public repository is the canonical source for GitHub-supported community-health fallbacks, organization profile content, contribution guidance, public security/support policy, issue and pull-request templates, and agent-governance declarations for [`led-dynamo`](https://github.com/led-dynamo).
 
-- GitHub owner: [`led-dynamo`](https://github.com/led-dynamo)
-- Linear project: [github.com/led-dynamo](https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494)
-- Public context: [`ORG_CONTEXT.md`](ORG_CONTEXT.md)
-- Canonical agent policy for this repository: [`agents.md`](agents.md)
-- Governance: [`GOVERNANCE.md`](GOVERNANCE.md)
-- Public repository graph: [`repository-relationships.json`](repository-relationships.json)
-- Relationship guide: [`docs/REPOSITORY_RELATIONSHIPS.md`](docs/REPOSITORY_RELATIONSHIPS.md)
-- Security reporting: [`SECURITY.md`](SECURITY.md)
+## Canonical organization links
 
-GitHub applies only its documented fallback community files automatically. Agent instructions, relationship files, and reusable workflows are **not copied into sibling repositories**; repositories that need local enforcement must carry their own lowercase `agents.md` and explicitly call or copy the provided workflow.
-
-`repository-relationships.json` is generated from GitHub owner membership plus reviewed declarations in `repository-relationships.manual.json`. It is public-safe: private repository names are omitted. The complete graph is synchronized separately to the approved private project registry.
+- GitHub organization: https://github.com/led-dynamo
+- Public organization defaults: https://github.com/led-dynamo/.github
+- Canonical Linear project: https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494
+- Fleet tracking issue: https://github.com/ORESoftware/k8s-cluster/issues/1222
 
 ## Safety baseline
 
-Changes are pull-request driven. Contributors and agents must preserve concurrent work, avoid destructive Git operations, resolve conflicts semantically with full history and cross-repository context, validate affected contracts, and never claim a remote action completed without authoritative evidence.
+All Git conflicts must be resolved semantically with full historical, repository-wide, organization-wide, and relevant external-organization context. Automated agents are hard-denied from destructive or history-rewriting operations, including all forms of `git stash`, `git reset`, `git clean`, `git filter-repo`, force pushing, destructive deletion, data or infrastructure teardown, credential revocation, and policy bypass.
 
-Generated baseline version: `2026-08-04`.
+## GitHub inheritance boundary
+
+GitHub can use supported community-health files from a public organization `.github` repository as fallbacks and can render `profile/README.md` on the organization page. `agents.md`, `AGENTS.md`, Copilot instructions, workflows, settings, rulesets, branch protections, permissions, and secrets are not automatically inherited merely because they exist here. Each repository must carry or synchronize compatible local policy and explicitly call reusable workflows where enforcement is required.
+
+Generated managed-policy version: `2026-08-08`.
 <!-- ore-org-baseline:end -->
