@@ -73,8 +73,8 @@ Both implementations should converge on:
 
 - GitHub Project: [`led-dynamo-project` — Project 1](https://github.com/orgs/led-dynamo/projects/1)
 - Linear project: `github.com/led-dynamo`
-- Central registry: [`desktop-applications.json`](https://github.com/ORESoftware/project-registry/blob/main/registry/desktop-applications.json)
-- Toolkit strategy: [`rust-desktop-strategies.md`](https://github.com/ORESoftware/project-registry/blob/main/docs/rust-desktop-strategies.md)
+- Central registry: `approved-private-registry` — opaque internal locator; no private repository URL is published here.
+- Toolkit strategy: maintained with the same approved private registry and mirrored into public organization documentation when releasable.
 - Portfolio rollout: [`DEN-2469`](https://linear.app/denman/issue/DEN-2469/roll-out-paired-rust-flutter-desktop-repositories-across-the-portfolio)
 
-Repository creation, toolkit changes, deep-link changes, renames, transfers, archival, board/transport changes, or platform-status changes must update this document, Linear, the central registry/strategy, and both companion repositories together.
+Repository creation, toolkit changes, deep-link changes, renames, transfers, archival, board/transport changes, or platform-status changes must update this document, Linear, the approved registry, and both companion repositories together.
