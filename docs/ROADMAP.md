@@ -7,6 +7,7 @@ This document is the GitHub-facing execution map for the `led-dynamo` organizati
 - [GitHub Project: led-dynamo-project](https://github.com/orgs/led-dynamo/projects/1)
 - [Linear project: github.com/led-dynamo](https://linear.app/denman/project/githubcomled-dynamo-bd51986e8494)
 - [Linear architecture and delivery map](https://linear.app/denman/document/leddy-architecture-and-delivery-map-910ae52f998f)
+- [Organization delivery tracker](https://github.com/led-dynamo/.github/issues/9)
 - [Project-routing contract](./PROJECTS.md)
 
 ## Current repository fleet
@@ -34,40 +35,54 @@ leddy-cli consumes interfaces + lib + clients.
 
 Zed packages materialize under `.vendor/.zed`. Generated `.zpkg.lock` files are committed only after a real resolver run against published packages.
 
-## Milestone 1 — Software-only vertical slice
+## Milestone 1 — Software-only vertical slice — complete
 
 Linear: [DEN-2343](https://linear.app/denman/issue/DEN-2343/deliver-the-leddy-software-only-vertical-slice)
 
-Deliver an arbitrary-length message through the API/CLI to a virtual WebSocket device, render deterministic scrolling frames, return acknowledgements and telemetry, and verify the flow in `leddy-e2e`.
+The complete API/CLI → WebSocket device → canonical renderer → telemetry/E2E path is merged.
 
-Required evidence:
+Evidence:
 
-- message validation and command fan-out;
-- configurable 100–300 by 5–20 display fixtures;
-- left/right scrolling and once/forever/count playback;
-- reconnect, replay, clear, and duplicate-suppression tests;
-- CI links from every affected repository.
+- [`leddy-lib#2`](https://github.com/led-dynamo/leddy-lib/pull/2) / [`2a9a0cd`](https://github.com/led-dynamo/leddy-lib/commit/2a9a0cd43180d4be1f09b1fd98ec00ead9203795): deterministic playback lifecycle and physical LED-chain ordering;
+- [`leddy-cli#4`](https://github.com/led-dynamo/leddy-cli/pull/4) / [`5adb8c6`](https://github.com/led-dynamo/leddy-cli/commit/5adb8c6f09530c838cc8daf30ed606c286ca1edd): modular CLI and canonical offline preview;
+- [`leddy-api-server.rs#3`](https://github.com/led-dynamo/leddy-api-server.rs/pull/3) / [`3171b44`](https://github.com/led-dynamo/leddy-api-server.rs/commit/3171b4412db972e773ac1ca44e4812b1f522b285): desired-state revisions, reconnect replay, and duplicate suppression;
+- [`leddy-e2e#3`](https://github.com/led-dynamo/leddy-e2e/pull/3) / [`907939c`](https://github.com/led-dynamo/leddy-e2e/commit/907939c48f8656da3c935161897e34e92c9d2347): live API + Rust virtual-device E2E covering 300×20 and 100×5 boards, arbitrary-length messages, both directions, all repeat modes, telemetry, clear, reconnect, and replay de-duplication.
 
-## Milestone 2 — First physical LED sign
+## Milestone 2 — First physical LED sign — software ready, hardware gated
 
-- Raspberry Pi: [DEN-2346](https://linear.app/denman/issue/DEN-2346/connect-the-raspberry-pi-agent-to-a-real-configurable-led-matrix)
-- Arduino/ESP32: [DEN-2349](https://linear.app/denman/issue/DEN-2349/implement-arduinoesp32-firmware-against-the-shared-device-protocol)
+### Raspberry Pi
 
-Validate the same contracts and renderer on physical hardware. Document power injection, level shifting, supported panel/strip types, current limits, safe shutdown, Wi-Fi provisioning, OTA updates, and recovery after power loss.
+Linear: [DEN-2346](https://linear.app/denman/issue/DEN-2346/connect-the-raspberry-pi-agent-to-a-real-configurable-led-matrix)
 
-## Milestone 3 — WhatsApp message ingestion
+[`leddy-rasp-pi#2`](https://github.com/led-dynamo/leddy-rasp-pi/pull/2) merged as [`7ce0089`](https://github.com/led-dynamo/leddy-rasp-pi/commit/7ce00891b3e6760736df40d29a20ba23cd820778). The runtime now has current protocol capabilities, canonical frame playback/order, brightness, acknowledgements, telemetry, atomic persisted configuration, bounded reconnect, and a no-GPIO frame-snapshot mode.
+
+The remaining direct panel driver is intentionally blocked on [DEN-2893](https://linear.app/denman/issue/DEN-2893/select-leddy-physical-panel-topology-and-power-architecture). Choose the panel family, signal interface, voltage/current budget, level shifting, fusing, wire gauge, and power-injection topology before committing to Raspberry Pi GPIO code.
+
+### Arduino / ESP32
+
+Linear: [DEN-2349](https://linear.app/denman/issue/DEN-2349/implement-arduinoesp32-firmware-against-the-shared-device-protocol) — complete
+
+[`leddy-arduino#2`](https://github.com/led-dynamo/leddy-arduino/pull/2) merged as [`4aa3154`](https://github.com/led-dynamo/leddy-arduino/commit/4aa315414c6893c5a2c9425533d3631f4e01238c). The firmware now supports configure/show/clear/ping, hello/ack/telemetry/pong/errors, left/right scrolling, once/forever/count playback, bounded frame planning, runtime matrix configuration, recovery documentation, and a hardware-in-loop smoke plan.
+
+The merge gate passed four independent lanes: host-native contract tests, Arduino ESP32, native ESP-IDF ESP32-S3, and STM32Cube HAL. ESP-IDF source selection now uses its supported CMake component mechanism instead of PlatformIO source filtering.
+
+## Milestone 3 — WhatsApp message ingestion — capability gated
 
 Linear: [DEN-2352](https://linear.app/denman/issue/DEN-2352/add-authenticated-whatsapp-group-and-channel-ingestion)
 
-Add WhatsApp as an optional authenticated connector. Allowlist sources, normalize messages into `MessageEnvelope`, deduplicate retries, keep an audit trail, and expose preview/pause/approval/emergency-clear controls. Connector credentials never reach display devices.
+The intended connector still normalizes approved inbound messages into canonical `MessageEnvelope` commands, deduplicates retries, records an audit trail, and exposes preview/pause/approval/emergency-clear controls. Connector credentials never reach display devices.
 
-## Current execution status — 2026-08-05
+Before deploying public webhook infrastructure, complete [DEN-2898](https://linear.app/denman/issue/DEN-2898/verify-official-whatsapp-groupchannel-ingestion-eligibility): verify the exact official Meta capability available to the actual account for group/channel ingestion. Standard Cloud API inbound webhooks are a valid supported integration surface, but group/channel support must not be assumed or replaced with unofficial browser/session scraping.
 
-- All 12 requested repositories are public and writable.
-- Shared package manifests and dependency validation are present.
-- The client SDK matrix is validated across native, BEAM, JVM/mobile, scripting, and TypeScript runtimes.
-- [leddy-lib PR #2](https://github.com/led-dynamo/leddy-lib/pull/2) adds finite/infinite playback and physical LED-chain ordering.
-- Four older draft PRs were closed as superseded rather than merged over stronger implementations.
+Cloudflare webhook/DNS/R2 provisioning is intentionally deferred until that eligibility and ingress shape are known.
+
+## Current execution status
+
+- Software-only vertical slice: complete and green end to end.
+- Arduino/ESP32 protocol parity: complete with four-target CI.
+- Raspberry Pi software runtime: merged; physical panel driver remains gated by DEN-2893.
+- WhatsApp connector: planning exists; deployment remains gated by DEN-2898.
+- Organization delivery tracker: [.github issue #9](https://github.com/led-dynamo/.github/issues/9).
 
 ## Merge policy
 
