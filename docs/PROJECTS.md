@@ -19,14 +19,16 @@ Documentation branches must be reviewed through pull requests and merged after c
 
 | Consumer | Canonical dependencies | Delivery |
 | --- | --- | --- |
-| `leddy-clients` | interfaces (plus shared lib) | already present |
+| `leddy-clients` | interfaces plus shared lib | already present |
 | `leddy-lib` | interfaces | already present |
 | `leddy-cli` | clients, interfaces, lib | already present |
-| `leddy-api-server.rs` | interfaces, lib, shared-auth; sync after publication | PR #2 |
-| `leddy-web-server.rs` | interfaces, lib, shared-auth; sync after publication | PR #3 |
-| `leddy-e2e` | clients, interfaces, lib, CLI | PR #2 |
-| `leddy-monorepo` | clients, interfaces, lib, CLI, shared-auth; sync after publication | PR #2 |
-| `leddy-mcp-server.rs` | clients, interfaces, lib, CLI, sync, shared-auth | issue #18 / seed below |
+| `leddy-api-server.rs` | interfaces, lib, shared-auth; sync after publication | merged PR #2 at `0e19032e47e50493a80dea948bc07f1394ea6665` |
+| `leddy-web-server.rs` | interfaces, lib, shared-auth; sync after publication | merged PR #3 at `bfeb6967549c8b955ca066cd28257569123513d5` |
+| `leddy-e2e` | clients, interfaces, lib, CLI | merged PR #2 at `c66c047137a3ec63d6690df967f132080522bc0b` |
+| `leddy-monorepo` | interfaces, lib, clients | unchanged; topology validator deliberately excludes CLI and infrastructure package imports |
+| `leddy-mcp-server.rs` | clients, interfaces, lib, CLI, sync, shared-auth | issue #18 and executable seed below |
+
+The CLI edge required for end-to-end and tool composition belongs in `leddy-e2e` and `leddy-mcp-server.rs`; it does not override the monorepo's explicit package-boundary policy.
 
 All packages materialize under `.vendor/.zed`. A canonical package may remain a committed gitlink as exact source transport, but it must be adopted with `zed overtake --git-submodules`; duplicate package identities, long-name aliases, and second workspace paths are prohibited.
 
