@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "ore.api-docs.v1",
+  "service": {
+    "name": "leddy-api-server",
+    "version": "0.1.0"
+  },
+  "public": {
+    "openapi": {
+      "path": "/openapi.json",
+      "aliases": [
+        "/api/docs.json"
+      ],
+      "mediaType": "application/vnd.oai.openapi+json;version=3.1",
+      "sha256": "cf0be66ce0ebb02c3fc077a88c3129c55b4d05f30070b3c7186d13731ae7fe88"
+    },
+    "ui": {
+      "path": "/api/docs",
+      "aliases": [
+        "/docs/api"
+      ]
+    }
+  },
+  "internal": {
+    "available": false
+  },
+  "mcp": {
+    "repository": "led-dynamo/leddy-mcp-server.rs",
+    "mode": "read-only",
+    "tools": [
+      "api_docs_discover",
+      "api_docs_get_openapi",
+      "api_docs_validate",
+      "api_docs_list_operations",
+      "api_docs_describe_operation"
+    ]
+  },
+  "provenance": {
+    "sourceRepository": "led-dynamo/leddy-api-server.rs",
+    "gitSha": "3171b4412db972e773ac1ca44e4812b1f522b285"
+  }
+}

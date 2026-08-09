@@ -2,16 +2,14 @@
 org = "led-dynamo"
 name = "leddy-mcp-server"
 version = "0.1.0"
-description = "Read-only MCP server for the Leddy fleet"
+description = "Read-only official-rmcp server for canonical Leddy API documentation"
 license = "MIT"
+keywords = ["api-docs", "led-matrix", "mcp", "rust", "zed"]
 language = "rust"
 
 [package.repository]
 vcs = "git"
 url = "https://github.com/led-dynamo/leddy-mcp-server.rs"
-
-[install]
-dir = ".vendor/.zed"
 
 [dependencies]
 "led-dynamo/leddy-clients" = "^0.1.0"
@@ -21,7 +19,29 @@ dir = ".vendor/.zed"
 "led-dynamo/leddy-sync" = "^0.1.0"
 "shared-auth/shared-auth-clients" = "^0.1.0"
 
+[build]
+command = "cargo build --release --locked"
+outputs = ["target/release/leddy-mcp-server"]
+
+[bin]
+leddy-mcp-server = "target/release/leddy-mcp-server"
+
+[install]
+adapter = "none"
+dir = ".vendor/.zed"
+
 [publish]
 include_readme = true
 tag_format = "v{version}"
-exclude = ["target/**", ".vendor/**", ".zed/**", ".env", ".env.*", "*.log"]
+smoke_test = "test -x \"$ZED_PKG_TEST_TARGET/target/release/leddy-mcp-server\""
+exclude = [
+  "target/**",
+  ".vendor/**",
+  ".zed/**",
+  ".env",
+  ".env.*",
+  "*.log",
+]
+
+[scripts]
+test = "cargo test --locked --all-targets --all-features"

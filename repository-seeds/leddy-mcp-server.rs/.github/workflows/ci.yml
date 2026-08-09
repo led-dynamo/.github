@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  pull_request:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -15,27 +15,142 @@ concurrency:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          components: rustfmt, clippy
-      - run: cargo fmt --all -- --check
-      - run: cargo clippy --all-targets --all-features -- -D warnings
-      - run: cargo test --all-targets --all-features
-      - name: Validate canonical Zed dependencies
+          persist-credentials: false
+
+      - name: Require deterministic official SDK resolution
         shell: bash
         run: |
           set -euo pipefail
-          for dependency in \
-            led-dynamo/leddy-clients \
-            led-dynamo/leddy-interfaces \
-            led-dynamo/leddy-lib \
-            led-dynamo/leddy-cli \
-            led-dynamo/leddy-sync \
-            shared-auth/shared-auth-clients
-          do
-            grep -Fq "\"${dependency}\"" .zpkg.toml
-          done
-          grep -Fq 'dir = ".vendor/.zed"' .zpkg.toml
+          test -f Cargo.lock
+          if git check-ignore -q Cargo.lock; then
+            echo 'Cargo.lock must be tracked for the deployable MCP server' >&2
+            exit 1
+          fi
+          python3 - <<'PY'
+          import pathlib
+          import tomllib
+
+          manifest = tomllib.loads(pathlib.Path('Cargo.toml').read_text(encoding='utf-8'))
+          requirement = manifest['dependencies']['rmcp']['version']
+          if requirement != '=3.1.0':
+              raise SystemExit(f'rmcp must be pinned exactly to =3.1.0, found {requirement!r}')
+
+          lock = tomllib.loads(pathlib.Path('Cargo.lock').read_text(encoding='utf-8'))
+          versions = {
+              package['name']: package['version']
+              for package in lock['package']
+              if package['name'] in {'rmcp', 'rmcp-macros'}
+          }
+          expected = {'rmcp': '3.1.0', 'rmcp-macros': '3.1.0'}
+          if versions != expected:
+              raise SystemExit(f'unexpected official SDK resolution: {versions!r}')
+          PY
+
+      - name: Validate pinned API-docs snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path('openapi/api-docs.manifest.json').read_text(encoding='utf-8'))
+          openapi_bytes = Path('openapi/leddy.openapi.json').read_bytes()
+          openapi = json.loads(openapi_bytes)
+          digest = hashlib.sha256(openapi_bytes).hexdigest()
+          expected_tools = [
+              'api_docs_discover',
+              'api_docs_get_openapi',
+              'api_docs_validate',
+              'api_docs_list_operations',
+              'api_docs_describe_operation',
+          ]
+          assert digest == 'cf0be66ce0ebb02c3fc077a88c3129c55b4d05f30070b3c7186d13731ae7fe88'
+          assert manifest['schemaVersion'] == 'ore.api-docs.v1'
+          assert manifest['public']['openapi']['sha256'] == digest
+          assert manifest['mcp']['repository'] == 'led-dynamo/leddy-mcp-server.rs'
+          assert manifest['mcp']['mode'] == 'read-only'
+          assert manifest['mcp']['tools'] == expected_tools
+          assert openapi['openapi'].startswith('3.1.')
+          operations = [
+              (method, path, item[method])
+              for path, item in openapi['paths'].items()
+              for method in ('get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace')
+              if method in item
+          ]
+          assert len(operations) == 6
+          assert [
+              operation['operationId']
+              for _, _, operation in operations
+              if operation['x-ore-mcp-expose']
+          ] == ['getHealth']
+          assert not any(
+              operation['x-ore-mcp-expose'] and operation['x-ore-mcp-mutating']
+              for _, _, operation in operations
+          )
+          assert openapi['paths']['/v1/ws/devices']['get']['x-ore-mcp-expose'] is False
+          assert openapi['paths']['/v1/devices']['get']['x-ore-mcp-expose'] is False
+          PY
+
+      - name: Reject network, credentials, handwritten dispatch, and write tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'reqwest|hyper::client|ureq|stdin\(\)\.lock\(\)\.lines|method not found:' -- src; then
+            echo 'forbidden network or handwritten protocol implementation detected' >&2
+            exit 1
+          fi
+          if git grep -nE '#\[tool[^]]*(publish|clear|write|delete|execute|send)' -- src; then
+            echo 'write-capable MCP tool detected' >&2
+            exit 1
+          fi
+          git diff --check
+
+      - name: Validate GitHub Actions
+        uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+        with:
+          args: .github/workflows/ci.yml
+
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: '1.97.1'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --locked --all-targets --all-features -- -D warnings
+
+      - name: Unit and real-process stdio tests
+        run: cargo test --locked --all-targets --all-features
+
+      - name: Documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --locked --no-deps
+
+      - name: Release build
+        run: cargo build --locked --release
+
+  msrv:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+      - name: MSRV check
+        run: cargo check --locked --all-targets --all-features

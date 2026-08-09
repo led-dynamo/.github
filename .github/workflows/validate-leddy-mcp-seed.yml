@@ -1,0 +1,154 @@
+name: validate Leddy MCP seed
+
+on:
+  pull_request:
+    paths:
+      - repository-seeds/leddy-mcp-server.rs/**
+      - .github/workflows/validate-leddy-mcp-seed.yml
+  push:
+    branches: [main]
+    paths:
+      - repository-seeds/leddy-mcp-server.rs/**
+      - .github/workflows/validate-leddy-mcp-seed.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SEED: repository-seeds/leddy-mcp-server.rs
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: '1.97.1'
+          components: rustfmt, clippy
+
+      - name: Materialize deterministic lockfile for the publication seed
+        run: cargo generate-lockfile --manifest-path "$SEED/Cargo.toml"
+
+      - name: Require exact rmcp 3.1.0 resolution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import pathlib
+          import tomllib
+
+          seed = pathlib.Path(os.environ['SEED'])
+          manifest = tomllib.loads((seed / 'Cargo.toml').read_text(encoding='utf-8'))
+          assert manifest['dependencies']['rmcp']['version'] == '=3.1.0'
+          lock = tomllib.loads((seed / 'Cargo.lock').read_text(encoding='utf-8'))
+          versions = {
+              package['name']: package['version']
+              for package in lock['package']
+              if package['name'] in {'rmcp', 'rmcp-macros'}
+          }
+          assert versions == {'rmcp': '3.1.0', 'rmcp-macros': '3.1.0'}, versions
+          PY
+
+      - name: Validate build-pinned ore.api-docs.v1 snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          seed = Path(os.environ['SEED'])
+          manifest = json.loads((seed / 'openapi/api-docs.manifest.json').read_text(encoding='utf-8'))
+          openapi_bytes = (seed / 'openapi/leddy.openapi.json').read_bytes()
+          openapi = json.loads(openapi_bytes)
+          digest = hashlib.sha256(openapi_bytes).hexdigest()
+          tools = [
+              'api_docs_discover',
+              'api_docs_get_openapi',
+              'api_docs_validate',
+              'api_docs_list_operations',
+              'api_docs_describe_operation',
+          ]
+          assert digest == 'cf0be66ce0ebb02c3fc077a88c3129c55b4d05f30070b3c7186d13731ae7fe88'
+          assert manifest['schemaVersion'] == 'ore.api-docs.v1'
+          assert manifest['public']['openapi']['sha256'] == digest
+          assert manifest['mcp']['repository'] == 'led-dynamo/leddy-mcp-server.rs'
+          assert manifest['mcp']['mode'] == 'read-only'
+          assert manifest['mcp']['tools'] == tools
+          assert openapi['openapi'].startswith('3.1.')
+          operations = [
+              operation
+              for item in openapi['paths'].values()
+              for method, operation in item.items()
+              if method in {'get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'}
+          ]
+          assert len(operations) == 6
+          assert [
+              operation['operationId']
+              for operation in operations
+              if operation['x-ore-mcp-expose']
+          ] == ['getHealth']
+          assert not any(
+              operation['x-ore-mcp-expose'] and operation['x-ore-mcp-mutating']
+              for operation in operations
+          )
+          PY
+
+      - name: Reject semantic regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'reqwest|hyper::client|ureq|stdin\(\)\.lock\(\)\.lines|method not found:' -- "$SEED/src"; then
+            echo 'forbidden network or handwritten protocol implementation detected' >&2
+            exit 1
+          fi
+          for tool in \
+            api_docs_discover \
+            api_docs_get_openapi \
+            api_docs_validate \
+            api_docs_list_operations \
+            api_docs_describe_operation
+          do
+            grep -Fq "fn ${tool}" "$SEED/src/main.rs"
+          done
+          grep -Fq 'API_SOURCE_HEAD: &str = "aea63f652a20c087260bab3c86b31baa80eaa7ea"' "$SEED/src/main.rs"
+          grep -Fq 'version = "=3.1.0"' "$SEED/Cargo.toml"
+          grep -Fq 'dir = ".vendor/.zed"' "$SEED/.zpkg.toml"
+          git diff --check
+
+      - name: Validate nested and root workflows
+        uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+        with:
+          args: >-
+            .github/workflows/validate-leddy-mcp-seed.yml
+            repository-seeds/leddy-mcp-server.rs/.github/workflows/ci.yml
+
+      - name: Format
+        run: cargo fmt --manifest-path "$SEED/Cargo.toml" --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --manifest-path "$SEED/Cargo.toml" --locked --all-targets --all-features -- -D warnings
+
+      - name: Unit and real-process stdio tests
+        run: cargo test --manifest-path "$SEED/Cargo.toml" --locked --all-targets --all-features
+
+      - name: Documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --manifest-path "$SEED/Cargo.toml" --locked --no-deps
+
+      - name: Release build
+        run: cargo build --manifest-path "$SEED/Cargo.toml" --locked --release
