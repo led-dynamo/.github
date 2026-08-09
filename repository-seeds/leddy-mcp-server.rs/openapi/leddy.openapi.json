@@ -1,0 +1,164 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Leddy Device API",
+    "version": "0.1.0",
+    "description": "Public HTTP and WebSocket contract for LED display messages, desired-state clearing, connected-device snapshots, and real-time device command/telemetry transport."
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "system"
+    },
+    {
+      "name": "display-control"
+    },
+    {
+      "name": "devices"
+    },
+    {
+      "name": "realtime"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Report Leddy API health",
+        "tags": [
+          "system"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "stable",
+        "x-ore-mcp-expose": true,
+        "x-ore-mcp-mutating": false
+      }
+    },
+    "/v1/messages": {
+      "post": {
+        "operationId": "publishMessage",
+        "summary": "Publish a display message to connected devices",
+        "tags": [
+          "display-control"
+        ],
+        "responses": {
+          "202": {
+            "description": "Message accepted and broadcast"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "stable",
+        "x-ore-mcp-expose": false,
+        "x-ore-mcp-mutating": true,
+        "description": "Mutates desired display state and broadcasts a sequenced command."
+      }
+    },
+    "/v1/clear": {
+      "post": {
+        "operationId": "clearDisplays",
+        "summary": "Clear all connected displays",
+        "tags": [
+          "display-control"
+        ],
+        "responses": {
+          "202": {
+            "description": "Clear command accepted and broadcast"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "stable",
+        "x-ore-mcp-expose": false,
+        "x-ore-mcp-mutating": true,
+        "description": "Mutates desired display state and broadcasts a clear command."
+      }
+    },
+    "/v1/devices": {
+      "get": {
+        "operationId": "listDevices",
+        "summary": "List connected device snapshots",
+        "tags": [
+          "devices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "stable",
+        "x-ore-mcp-expose": false,
+        "x-ore-mcp-mutating": false,
+        "description": "Device identifiers, firmware, and telemetry-derived state are documented but excluded from the baseline MCP catalog."
+      }
+    },
+    "/v1/devices/{device_id}": {
+      "parameters": [
+        {
+          "name": "device_id",
+          "in": "path",
+          "required": true,
+          "description": "Device identifier.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getDevice",
+        "summary": "Get one connected device snapshot",
+        "tags": [
+          "devices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Device snapshot"
+          },
+          "404": {
+            "description": "Device not found"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "stable",
+        "x-ore-mcp-expose": false,
+        "x-ore-mcp-mutating": false,
+        "description": "Device identifiers, firmware, and telemetry-derived state are excluded from the baseline MCP catalog."
+      }
+    },
+    "/v1/ws/devices": {
+      "get": {
+        "operationId": "connectDeviceWebSocket",
+        "summary": "Upgrade a device connection to the command and telemetry WebSocket",
+        "tags": [
+          "devices",
+          "realtime"
+        ],
+        "responses": {
+          "101": {
+            "description": "WebSocket switching protocols"
+          }
+        },
+        "security": [],
+        "x-ore-visibility": "public",
+        "x-ore-stability": "beta",
+        "x-ore-mcp-expose": false,
+        "x-ore-mcp-mutating": false,
+        "description": "A long-lived bidirectional transport that can receive display commands and submit device events. It is never exposed as a baseline MCP tool."
+      }
+    }
+  }
+}
