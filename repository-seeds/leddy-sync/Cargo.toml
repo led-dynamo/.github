@@ -1,0 +1,9 @@
+[package]
+name = "leddy-sync"
+version = "0.1.0"
+edition = "2024"
+description = "Deterministic synchronization primitives for the Leddy fleet"
+license = "MIT"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }

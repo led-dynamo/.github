@@ -1,0 +1,10 @@
+[package]
+name = "leddy-mcp-server"
+version = "0.1.0"
+edition = "2024"
+description = "Read-only MCP stdio server for the Leddy fleet"
+license = "MIT"
+publish = false
+
+[dependencies]
+serde_json = "1.0"
