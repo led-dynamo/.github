@@ -1,0 +1,27 @@
+[package]
+org = "led-dynamo"
+name = "leddy-mcp-server"
+version = "0.1.0"
+description = "Read-only MCP server for the Leddy fleet"
+license = "MIT"
+language = "rust"
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/led-dynamo/leddy-mcp-server.rs"
+
+[install]
+dir = ".vendor/.zed"
+
+[dependencies]
+"led-dynamo/leddy-clients" = "^0.1.0"
+"led-dynamo/leddy-interfaces" = "^0.1.0"
+"led-dynamo/leddy-lib" = "^0.1.0"
+"led-dynamo/leddy-cli" = "^0.1.0"
+"led-dynamo/leddy-sync" = "^0.1.0"
+"shared-auth/shared-auth-clients" = "^0.1.0"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = ["target/**", ".vendor/**", ".zed/**", ".env", ".env.*", "*.log"]

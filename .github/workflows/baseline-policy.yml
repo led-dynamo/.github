@@ -18,8 +18,22 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Validate organization baseline
-        run: python3 scripts/validate_baseline.py .
+        shell: bash
+        run: |
+          set +e
+          output="$(python3 scripts/validate_baseline.py . 2>&1)"
+          status=$?
+          set -e
+
+          printf '%s\n' "$output"
+          if (( status != 0 )); then
+            escaped="${output//'%'/'%25'}"
+            escaped="${escaped//$'\r'/'%0D'}"
+            escaped="${escaped//$'\n'/'%0A'}"
+            printf '::error title=Organization baseline validation failed::%s\n' "$escaped"
+          fi
+          exit "$status"
