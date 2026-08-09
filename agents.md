@@ -30,7 +30,7 @@ Lowercase `agents.md` is canonical. Read every applicable lowercase `agents.md` 
 
 Inspect the current branch, complete working tree, remotes, default branch, open pull requests, linked GitHub issues, linked Linear work, repository documentation, tests, schemas, generated artifacts, deployment definitions, and relevant related repositories. Preserve every unfamiliar or uncommitted change.
 
-Use read-only inspection and non-pruning synchronization such as `git status --short --branch`, `git remote -v`, `git fetch --all`, `git diff`, `git log`, `git show`, and `git blame`. Never treat a dirty worktree or inconvenient branch as permission to discard state.
+Use read-only inspection and non-pruning synchronization such as `git status --short --branch`, `git remote -v`, `git fetch --all`, `git diff`, `git log`, `git show`, and `git blame`. Before integrating remote work, avoid git rebase in favor of git merge. Never treat a dirty worktree or inconvenient branch as permission to discard state.
 
 ## Mandatory semantic conflict resolution
 
