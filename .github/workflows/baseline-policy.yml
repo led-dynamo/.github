@@ -22,4 +22,18 @@ jobs:
         with:
           persist-credentials: false
       - name: Validate organization baseline
-        run: python3 scripts/validate_baseline.py .
+        shell: bash
+        run: |
+          set +e
+          output="$(python3 scripts/validate_baseline.py . 2>&1)"
+          status=$?
+          set -e
+
+          printf '%s\n' "$output"
+          if (( status != 0 )); then
+            escaped="${output//'%'/'%25'}"
+            escaped="${escaped//$'\r'/'%0D'}"
+            escaped="${escaped//$'\n'/'%0A'}"
+            printf '::error title=Organization baseline validation failed::%s\n' "$escaped"
+          fi
+          exit "$status"
