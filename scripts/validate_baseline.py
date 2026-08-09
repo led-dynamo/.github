@@ -34,8 +34,9 @@ SECRET_PATTERNS = [
     re.compile(r'gh[pousr]_[A-Za-z0-9]{20,}'),
     re.compile(r'github_pat_[A-Za-z0-9_]{20,}'),
     re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
-    re.compile(r'(?i)authorization:\\s*bearer\\s+[A-Za-z0-9._-]{16,}'),
+    re.compile(r'(?i)authorization:\s*bearer\s+[A-Za-z0-9._-]{16,}'),
 ]
+OPAQUE_TEXT_SUFFIXES = {'.b64'}
 
 def fail(message: str) -> None:
     print(f'ERROR: {message}', file=sys.stderr)
@@ -62,7 +63,9 @@ for path in ROOT.rglob('*'):
     for pattern in SECRET_PATTERNS:
         if pattern.search(text):
             fail(f'possible credential in {path.relative_to(ROOT)}')
-    if text and not text.endswith('\n'):
+    # Opaque base64 carriers are checksum-pinned byte streams, not prose. Preserve
+    # their exact object identity while continuing all placeholder/secret scans.
+    if text and not text.endswith('\n') and path.suffix not in OPAQUE_TEXT_SUFFIXES:
         fail(f'missing final newline: {path.relative_to(ROOT)}')
 
 workflow_paths = list((ROOT / '.github/workflows').glob('*.y*ml'))
@@ -74,7 +77,7 @@ for path in workflow_paths:
     if 'timeout-minutes:' not in text:
         fail(f'workflow lacks timeout: {path.relative_to(ROOT)}')
     for number, line in enumerate(text.splitlines(), 1):
-        match = re.search(r'^\\s*(?:-\\s+)?uses:\\s*([^\\s#]+)', line)
+        match = re.search(r'^\s*(?:-\s+)?uses:\s*([^\s#]+)', line)
         if not match:
             continue
         ref = match.group(1)
