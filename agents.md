@@ -62,7 +62,7 @@ Do not use destructive commands merely to make tests pass, clear a conflict, sim
 
 ### Required safe alternatives
 
-Use additive branches, separate clean worktrees or clones, explicit path staging, ordinary commits, non-force pushes, patch-based edits, read-only queries, dry runs, backups, additive migrations, and reversible roll-forward changes. Leave unrelated work untouched. When safe progress is impossible, preserve all state and report the exact blocker.
+To preserve shared history, avoid git rebase in favor of git merge. Use additive branches, separate clean worktrees or clones, explicit path staging, ordinary commits, non-force pushes, patch-based edits, read-only queries, dry runs, backups, additive migrations, and reversible roll-forward changes. Leave unrelated work untouched. When safe progress is impossible, preserve all state and report the exact blocker.
 
 ## Source ownership and cross-repository context
 
