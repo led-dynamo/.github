@@ -44,12 +44,12 @@ Git may retain canonical repositories as exact committed source transport. Adopt
 ## Publication order
 
 1. Publish and validate `led-dynamo/leddy-sync`.
-2. Run this seed's `publish.sh` from an authenticated, network-enabled GitHub CLI environment.
+2. Run this seed's `publish.sh` from an authenticated, network-enabled GitHub CLI environment, or with `GH_TOKEN` / `GITHUB_TOKEN` as a credential fallback. The token is never placed in a remote URL.
 3. Validate the initial repository CI and exact Zed resolution.
 4. Run the immutable API+MCP parity gate in `led-dynamo-test`.
 5. Promote API PR #4 only while both tested heads remain unchanged.
 
-The publisher refuses to overwrite an existing repository, generates and validates a deterministic `Cargo.lock`, runs formatting, Clippy, tests, documentation, and release build, then creates the public canonical repository.
+The publisher refuses to overwrite an existing repository, refuses dirty or non-`main` worktrees, rejects unrelated `origin` remotes, generates and validates a deterministic `Cargo.lock`, runs formatting, Clippy, tests, documentation, and release build, then creates the public canonical repository.
 
 ## Local validation
 
@@ -61,5 +61,7 @@ cargo test --locked --all-targets --all-features
 cargo doc --locked --no-deps
 cargo build --locked --release
 ```
+
+The exact recovered Git history is retained under `.artifacts/repository-recovery-wave7/`; it records head `6b8df986bcdd37a3aafdd1a97e1703c8db0379f6` without rewriting the current `.github` history.
 
 Tracking: `led-dynamo/.github#18`, Linear `DEN-2885`, API work `DEN-3159`, and GitHub Project #1.

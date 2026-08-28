@@ -62,7 +62,7 @@ Do not use destructive commands merely to make tests pass, clear a conflict, sim
 
 ### Required safe alternatives
 
-Use additive branches, separate clean worktrees or clones, explicit path staging, ordinary commits, non-force pushes, patch-based edits, read-only queries, dry runs, backups, additive migrations, and reversible roll-forward changes. Leave unrelated work untouched. When safe progress is impossible, preserve all state and report the exact blocker.
+To preserve shared history, avoid git rebase in favor of git merge. Use additive branches, separate clean worktrees or clones, explicit path staging, ordinary commits, non-force pushes, patch-based edits, read-only queries, dry runs, backups, additive migrations, and reversible roll-forward changes. Leave unrelated work untouched. When safe progress is impossible, preserve all state and report the exact blocker.
 
 ## Source ownership and cross-repository context
 
@@ -76,3 +76,15 @@ Never print, log, commit, paste into issues, include in fixtures, or expose toke
 
 Use focused branches and pull requests. Link the relevant Linear issue or project. Explain behavior, risks, migration and roll-forward considerations, security impact, tests run, conflicts and their semantic resolution, and cross-repository dependencies. Never report a branch, commit, pull request, merge, deployment, test run, or external update as complete without authoritative remote evidence.
 <!-- ore-org-baseline:end -->
+
+<!-- ore-primary-branch-policy:begin -->
+## Primary branch and concurrent-agent policy
+
+This organization policy overrides generic feature-branch and worktree defaults for agent tooling.
+
+- Highly prefer an existing primary branch, in this order: `main`, `dev`, then `master`.
+- Work directly on the selected primary branch even when other agents are active. Use another branch only when a human or a repository-specific release process explicitly requires it.
+- Never create or use a Git worktree unless a human explicitly instructs you to do so for the current task. Concurrency alone is not permission to use a worktree.
+- Concurrent agents must coordinate repository and file ownership through the available agent communication channel, keep edits scoped, inspect live state before each write, and hand off cleanly. Coordinate instead of isolating routine work in worktrees.
+- Preserve unrelated in-progress changes and never overwrite another agent's work. If safe ownership of overlapping files cannot be established, pause that overlapping edit and coordinate before continuing.
+<!-- ore-primary-branch-policy:end -->
