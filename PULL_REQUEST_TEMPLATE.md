@@ -39,3 +39,11 @@ List formatters, linters, tests, builds, schema/codegen checks, migration valida
 - [ ] Conflicts were resolved semantically using both sides and relevant history.
 - [ ] Destructive Git recovery, force pushes to protected branches, and history rewrites were not used.
 - [ ] Logs and traces exclude secrets and user content by default and preserve tenant boundaries.
+
+## Salvage check
+
+If this PR supersedes or replaces an older one, say which, and name at least one
+concrete thing carried forward from it (a test, a fixture, an error message, a
+pin, a doc paragraph). See [`docs/pr-salvage-policy.md`](../docs/pr-salvage-policy.md).
+
+- [ ] Supersedes nothing, **or** the salvaged item is named above.
