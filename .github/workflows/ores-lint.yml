@@ -26,7 +26,7 @@ jobs:
 
       # Node is the runner for ESLint and for the cross-language require-send
       # scanner, so it is installed whenever any supported language is present.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.detect.outputs.js == 'true' || steps.detect.outputs.rs == 'true' || steps.detect.outputs.dart == 'true' || steps.detect.outputs.gleam == 'true'
         with:
           node-version: '22'
