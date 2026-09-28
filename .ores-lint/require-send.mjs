@@ -325,10 +325,17 @@ export function analyzeSource(source, language) {
       continue;
     }
 
-    // `name.send(...)` or `send(name)` / `logging.send(name)`
+    // `name.send(...)`, `send(name)` / `logging.send(name)`, or a Gleam
+    // pipeline such as `event |> logging.send` / `event |> send`.
     if (tok.type === 'ident' && TERMINAL.has(tok.value)) {
       const prev = tokens[i - 1];
       if (prev?.type === 'dot' && tokens[i - 2]?.type === 'ident') {
+        const callee = qualifiedName(tokens, i - 2);
+        clear(callee.name);
+        if (tokens[callee.start - 1]?.type === 'pipe' && tokens[callee.start - 2]?.type === 'ident') {
+          clear(qualifiedName(tokens, callee.start - 2).name);
+        }
+      } else if (prev?.type === 'pipe' && tokens[i - 2]?.type === 'ident') {
         clear(qualifiedName(tokens, i - 2).name);
       }
       if (tokens[i + 1]?.type === 'lparen') {

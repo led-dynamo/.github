@@ -6,15 +6,30 @@ on:
   workflow_dispatch:
   # Add `push:` here once this repo's lint debt is paid down.
 
+permissions:
+  contents: read
+
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out exact candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Verify exact contributor head
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
 
       - name: Detect project types
         id: detect
+        shell: bash
         run: |
+          set -euo pipefail
           { [ -f package.json ] || git ls-files '*.js' '*.mjs' '*.cjs' '*.ts' '*.tsx' | grep -q .; } \
             && echo "js=true" >> "$GITHUB_OUTPUT" || echo "js=false" >> "$GITHUB_OUTPUT"
           { [ -f Cargo.toml ] || git ls-files '*.rs' | grep -q .; } \
@@ -24,31 +39,53 @@ jobs:
           { [ -f gleam.toml ] || git ls-files '*.gleam' | grep -q .; } \
             && echo "gleam=true" >> "$GITHUB_OUTPUT" || echo "gleam=false" >> "$GITHUB_OUTPUT"
 
-      # Node is the runner for ESLint and for the cross-language require-send
-      # scanner, so it is installed whenever any supported language is present.
-      - uses: actions/setup-node@v4
+      # Node is also the deterministic runner for the cross-language
+      # require-send scanner fixtures, so every supported language gets it.
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         if: steps.detect.outputs.js == 'true' || steps.detect.outputs.rs == 'true' || steps.detect.outputs.dart == 'true' || steps.detect.outputs.gleam == 'true'
         with:
           node-version: '22'
+          package-manager-cache: false
 
-      # ESLint is a global tool here, not a repo dependency - so this job never
-      # runs `npm install` and never needs the repo's node_modules.
-      - name: Install eslint globally
+      - name: Install bounded ESLint toolchain
         if: steps.detect.outputs.js == 'true'
-        run: npm i -g eslint typescript-eslint
+        run: npm i -g eslint@9 typescript-eslint@8
 
-      - name: Install clippy
+      - name: Set up Rust lint toolchain
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         if: steps.detect.outputs.rs == 'true'
-        run: rustup component add clippy || true
+        with:
+          toolchain: '1.90.0'
+          components: rustfmt,clippy
 
-      # Dart/Gleam SDKs are optional. When absent, dart.sh / gleam.sh skip
-      # with an actionable message; require-send.mjs still runs via Node.
-      - uses: dart-lang/setup-dart@v1
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
         if: steps.detect.outputs.dart == 'true'
-        continue-on-error: true
+        with:
+          sdk: '3.12.1'
 
-      - name: Run ores-lint
+      - name: Set up Gleam and Erlang
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: steps.detect.outputs.gleam == 'true'
+        with:
+          otp-version: '27'
+          gleam-version: '1.16.0'
+          rebar3-version: '3'
+
+      # Toolkit integrity is a hard gate even while the fleet's historical
+      # lint debt remains warn-only. A missing parser, broken fixture, or
+      # changed diagnostic contract must never masquerade as a clean lint run.
+      - name: Run ores-lint self-tests
+        if: steps.detect.outputs.js == 'true' || steps.detect.outputs.rs == 'true' || steps.detect.outputs.dart == 'true' || steps.detect.outputs.gleam == 'true'
+        run: sh .ores-lint/selftest.sh
+
+      - name: Run ores-lint rollout scan
         run: sh .ores-lint/lint.sh
         env:
-          # Warn-only. Set to 1 here to make lint findings fail this repo's CI.
+          # Findings remain advisory during rollout; parser/tool integrity above
+          # is already fail-closed. Flip this to 1 once current debt is zero.
           ORES_LINT_STRICT: '0'
+
+      - name: Verify lint did not mutate tracked state
+        run: git diff --exit-code
