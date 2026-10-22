@@ -17,3 +17,16 @@ changes.
 Deployment configuration belongs in `leddy-infra`. Application repositories
 publish immutable artifacts; GitOps reconciles environment state from the
 appropriate branch and overlay.
+
+## Rust-first scripts and automation
+
+**No new Python scripts; use Rust** for build, CI, testing, data and schema migrations, code generation, releases, deployments, security audits, and repository maintenance. Prefer a Rust CLI or `cargo xtask` with only thin shell/YAML invocation wrappers.
+
+Existing Python scripts are migration debt and must not be removed before equivalently tested Rust tools are ready. Inventory all callers, preserve CLI flags, exit codes, data formats, error handling, security controls, and supported platforms. Verify positive, negative, and end-to-end scenarios against the exact changed head before changing CI/docs/hooks.
+
+**Python application code is a special-case, documented exception**, with an accountable owner, rationale, boundaries and review criteria. Application-specific tests may be part of the app exception. Generic automation, generators or maintenance scripts are not included.
+
+For Rust replacements, document reproducible Cargo commands and run applicable `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test` and executable smoke tests. Never claim unexecuted tests or source-free runner canaries establish source execution.
+
+Organization-level `.github` contributor guidance is not automatic inheritance for `AGENTS.md` or custom CI enforcement. Synchronize local agent instructions and configure checks explicitly.
+
