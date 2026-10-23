@@ -22,7 +22,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Test Rust public privacy validator
+        run: cargo test --manifest-path tools/public-privacy-validator/Cargo.toml --all-targets
       - name: Exercise fail-closed privacy fixture
-        run: python3 scripts/validate_public_privacy.py --self-test
+        run: cargo run --quiet --manifest-path tools/public-privacy-validator/Cargo.toml -- --self-test
       - name: Reject private repository references
-        run: python3 scripts/validate_public_privacy.py .
+        run: cargo run --quiet --manifest-path tools/public-privacy-validator/Cargo.toml -- .
